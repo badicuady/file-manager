@@ -34,3 +34,19 @@ query Items ($path: String) {
 }
 ```
 
+### Create directory in base directory
+```
+mutation CreateDirectory($activeDirectory: String, $newDirectoryName: String!) {
+  createDirectory(activeDirectory:$activeDirectory, createdDirectoryName: $newDirectoryName) {
+    name,
+    icon
+  }
+}
+```
+
+#### Variables
+```
+{
+  "newDirectoryName": "test"
+}
+```
