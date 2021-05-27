@@ -14,6 +14,7 @@ namespace FileManager.Api.Configuration
                 .AddScoped<ICreateDirectoryHandler, CreateDirectoryHandler>()
                 .AddScoped<IDeleteDirectoryHandler, DeleteDirectoryHandler>()
                 .AddScoped<IRenameDirectoryHandler, RenameDirectoryHandler>()
+                .AddScoped<IUploadFileHandler, UploadFileHandler>()
                 .AddScoped<IDeleteFileHandler, DeleteFileHandler>()
                 .AddScoped<IRenameFileHandler, RenameFileHandler>()
                 .AddScoped<IDirectoryRepository, DirectoryRepository>()

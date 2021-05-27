@@ -1,7 +1,10 @@
-﻿using FileManager.Api.Types.OutputTypes;
+﻿using System.IO;
+using System.Linq;
+using FileManager.Api.Types.OutputTypes;
 using FileManager.Application.Interfaces;
 using FileManager.Shared.Constants;
 using GraphQL;
+using GraphQL.Attachments;
 using GraphQL.Types;
 
 namespace FileManager.Api.Interactions
@@ -27,6 +30,7 @@ namespace FileManager.Api.Interactions
             AddDeleteDirectory();
             AddRenameDirectory();
 
+            AddUploadFile();
             AddDeleteFile();
             AddRenameFile();
         }
@@ -124,6 +128,36 @@ namespace FileManager.Api.Interactions
                     }
                 );
 
+        private void AddUploadFile() =>
+            FieldAsync<BooleanGraphType>(
+                "uploadFile",
+                arguments: new QueryArguments
+                (
+                    new QueryArgument<StringGraphType>
+                    {
+                        Name = "activeDirectory",
+                        DefaultValue = PathConstants.BaseDirectorySeparatorChar,
+                        ResolvedType = new StringGraphType()
+                    },
+                    new QueryArgument<NonNullGraphType<StringGraphType>>
+                    {
+                        Name = "uploadFileName",
+                        ResolvedType = new StringGraphType()
+                    }
+                ),
+                resolve: async context =>
+                {
+                    var activeDirectory = context.GetArgument<string>("activeDirectory");
+                    var uploadFileName = context.GetArgument<string>("uploadFileName");
+                    var incomingAttachments = context.IncomingAttachments();
+                    var attachmentStream = incomingAttachments.Values.FirstOrDefault();
+                    var stream = CreateMemoryStream(attachmentStream);
+
+                    await _fileRepository.UploadFileHandler.Handle(activeDirectory, uploadFileName ?? attachmentStream.Name, stream, context.CancellationToken);
+
+                    return true;
+                });
+
         private void AddDeleteFile() =>
             FieldAsync<BooleanGraphType>
                 (
@@ -187,5 +221,13 @@ namespace FileManager.Api.Interactions
                         return true;
                     }
                 );
+
+        private static MemoryStream CreateMemoryStream(AttachmentStream attachmentStream)
+        {
+            var stream = new MemoryStream();
+            attachmentStream.CopyTo(stream);
+            stream.Position = 0;
+            return stream;
+        }
     }
 }
