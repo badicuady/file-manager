@@ -3,7 +3,7 @@ GraphQL file manager
 
 # Install
 * Install Docker: https://www.docker.com/products/docker-desktop
-* Run powershell _.\start.sh_
+* Run powershell ___.\start.sh___
 * Launch browser [here](http://localhost:5000/ui/playground)
 
 # Queries
