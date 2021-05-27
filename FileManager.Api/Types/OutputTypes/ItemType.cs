@@ -11,6 +11,7 @@ namespace FileManager.Api.Types.OutputTypes
             Field(t => t.Name);
             Field(t => t.Icon, type: typeof(IconTypeEnumType));
             Field(t => t.Size);
+            Field(t => t.Metadata, type: typeof(FileSystemInfoType));
         }
     }
 }
