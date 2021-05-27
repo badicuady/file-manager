@@ -10,12 +10,12 @@ using Microsoft.Extensions.Options;
 
 namespace FileManager.Application.Handlers.CommandHandlers
 {
-    public class DeleteDirectoryHandler : IDeleteDirectoryHandler
+    public class DeleteFileHandler : IDeleteFileHandler
     {
         private readonly ILogger<DeleteDirectoryHandler> _logger;
         private readonly ManagerSettings _settings;
 
-        public DeleteDirectoryHandler(ILogger<DeleteDirectoryHandler> logger, IOptions<ManagerSettings> settings)
+        public DeleteFileHandler(ILogger<DeleteDirectoryHandler> logger, IOptions<ManagerSettings> settings)
         {
             _logger = logger;
             _settings = settings.Value;
@@ -24,25 +24,23 @@ namespace FileManager.Application.Handlers.CommandHandlers
         public async Task Handle
         (
             string activeDirectory = PathConstants.BaseDirectorySeparatorChar,
-            string deleteDirectoryName = null,
-            bool forced = true,
+            string deleteFileName = null,
             CancellationToken cancelationToken = default
         )
         {
             activeDirectory = PathProcessing.NormalizaPath(activeDirectory);
-            deleteDirectoryName = PathProcessing.NormalizaPath(deleteDirectoryName);
+            deleteFileName = PathProcessing.NormalizaPath(deleteFileName);
 
             PathProcessing.ValidateDirectoryPath(activeDirectory, defaultBasePath: _settings.BasePath);
 
             var basePath = PathProcessing.ComputeFullPath(activeDirectory, _settings.BasePath);
-            var fullPath = PathProcessing.ComputeFullPath(deleteDirectoryName, basePath);
-            
-            PathProcessing.ValidateBasePath(fullPath);
-            PathProcessing.ValidateDirectoryPath(deleteDirectoryName, basePath, _settings.BasePath);
+            var fullPath = PathProcessing.ComputeFullPath(deleteFileName, basePath);
 
-            _logger.LogInformation($"Delete directory {fullPath}");
+            PathProcessing.ValidateFilePath(deleteFileName, basePath, _settings.BasePath);
 
-            await Task.Run(() => Directory.Delete(fullPath, forced), cancelationToken);
+            _logger.LogInformation($"Delete file {fullPath}");
+
+            await Task.Run(() => File.Delete(fullPath), cancelationToken);
         }
     }
 }

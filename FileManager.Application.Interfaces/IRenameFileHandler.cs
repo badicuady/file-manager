@@ -4,13 +4,12 @@ using FileManager.Shared.Constants;
 
 namespace FileManager.Application.Interfaces
 {
-    public interface IDeleteDirectoryHandler
+    public interface IDeleteFileHandler
     {
         Task Handle
         (
             string activeDirectory = PathConstants.BaseDirectorySeparatorChar,
-            string deleteDirectoryName = null,
-            bool forced = true,
+            string deleteFileName = null,
             CancellationToken cancelationToken = default
         );
     }

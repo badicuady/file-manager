@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FileManager.Application.Interfaces;
+using FileManager.Exceptions;
 using FileManager.Shared.Constants;
 using FileManager.Shared.Processing;
 using FileManager.Shared.Settings;
@@ -29,8 +30,17 @@ namespace FileManager.Application.Handlers.CommandHandlers
             CancellationToken cancelationToken = default
         )
         {
-            var oldPath = PathProcessing.ValidatePath(PathProcessing.NormalizaPath(activeDirectory), defaultBasePath: _settings.BasePath);
-            var newPath = PathProcessing.ValidatePath(PathProcessing.NormalizaPath(renameDirectoryName), defaultBasePath: _settings.BasePath, check: false);
+            activeDirectory = PathProcessing.NormalizaPath(activeDirectory);
+            renameDirectoryName = PathProcessing.NormalizaPath(renameDirectoryName);
+
+            PathProcessing.ValidateDirectoryPath(activeDirectory, defaultBasePath: _settings.BasePath);
+
+            var oldPath = PathProcessing.ComputeFullPath(activeDirectory, _settings.BasePath);
+            var newPath = PathProcessing.ComputeFullPath(renameDirectoryName, _settings.BasePath);
+           
+            PathProcessing.ValidateBasePath(oldPath);
+            PathProcessing.ValidateDirectoryPath(activeDirectory, defaultBasePath: _settings.BasePath);
+            PathProcessing.ValidateDirectoryPath(renameDirectoryName, defaultBasePath: _settings.BasePath, check: false);
 
             _logger.LogInformation($"Rename directory {oldPath} to {newPath}");
 

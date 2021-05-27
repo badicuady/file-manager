@@ -1,5 +1,6 @@
 ﻿using FileManager.Application;
 using FileManager.Application.Handlers.CommandHandlers;
+using FileManager.Application.Handlers.Repositories;
 using FileManager.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,11 @@ namespace FileManager.Api.Configuration
             services.AddScoped<IGetItemsHandler, GetItemsHandler>()
                 .AddScoped<ICreateDirectoryHandler, CreateDirectoryHandler>()
                 .AddScoped<IDeleteDirectoryHandler, DeleteDirectoryHandler>()
-                .AddScoped<IRenameDirectoryHandler, RenameDirectoryHandler>();
+                .AddScoped<IRenameDirectoryHandler, RenameDirectoryHandler>()
+                .AddScoped<IDeleteFileHandler, DeleteFileHandler>()
+                .AddScoped<IRenameFileHandler, RenameFileHandler>()
+                .AddScoped<IDirectoryRepository, DirectoryRepository>()
+                .AddScoped<IFileRepository, FileRepository>();
 
             return services;
         }

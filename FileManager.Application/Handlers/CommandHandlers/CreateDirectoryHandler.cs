@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FileManager.Application.Interfaces;
@@ -31,17 +30,24 @@ namespace FileManager.Application.Handlers.CommandHandlers
             CancellationToken cancelationToken = default
         )
         {
-            var basePath = PathProcessing.ValidatePath(PathProcessing.NormalizaPath(activeDirectory), defaultBasePath: _settings.BasePath);
-            var fullPath = PathProcessing.ValidatePath(PathProcessing.NormalizaPath(newDirectoryName), basePath, _settings.BasePath, false);
+            activeDirectory = PathProcessing.NormalizaPath(activeDirectory);
+            newDirectoryName = PathProcessing.NormalizaPath(newDirectoryName);
+
+            PathProcessing.ValidateDirectoryPath(activeDirectory, defaultBasePath: _settings.BasePath);
+
+            var basePath = PathProcessing.ComputeFullPath(activeDirectory, _settings.BasePath);
+            var fullPath = PathProcessing.ComputeFullPath(newDirectoryName, basePath);
+            
+            PathProcessing.ValidateDirectoryPath(newDirectoryName, basePath, _settings.BasePath, false);
 
             _logger.LogInformation($"Creating directory {fullPath}");
 
             var createDirectory = await Task.Run(() => Directory.CreateDirectory(fullPath), cancelationToken);
-            
-            return 
-                new ManagerDirectory 
-                { 
-                    Name = createDirectory.Name, 
+
+            return
+                new ManagerDirectory
+                {
+                    Name = createDirectory.Name,
                     Icon = IconType.ManagerDirectory,
                     Metadata = createDirectory
                 };

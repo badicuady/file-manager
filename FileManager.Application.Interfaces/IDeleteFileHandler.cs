@@ -4,13 +4,13 @@ using FileManager.Shared.Constants;
 
 namespace FileManager.Application.Interfaces
 {
-    public interface IDeleteDirectoryHandler
+    public interface IRenameFileHandler
     {
         Task Handle
         (
             string activeDirectory = PathConstants.BaseDirectorySeparatorChar,
-            string deleteDirectoryName = null,
-            bool forced = true,
+            string oldFileName = null,
+            string renameFileName = null,
             CancellationToken cancelationToken = default
         );
     }
