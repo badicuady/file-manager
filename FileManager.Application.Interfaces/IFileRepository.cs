@@ -7,5 +7,7 @@
         IDeleteFileHandler DeleteFileHandler { get; }
 
         IRenameFileHandler RenameFileHandler { get; }
+
+        ICopyFileHandler CopyFileHandler { get; }
     }
 }

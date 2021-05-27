@@ -10,5 +10,7 @@ namespace FileManager.Domain.Models.Manager
         public IconType Icon { get; set; }
 
         public FileSystemInfo Metadata { get; set; }
+
+        public long Size { get; set; }
     }
 }

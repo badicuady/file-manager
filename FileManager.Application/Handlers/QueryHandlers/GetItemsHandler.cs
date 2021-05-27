@@ -39,10 +39,30 @@ namespace FileManager.Application
             _logger.LogInformation($"Listing directory {fullPath}");
 
             var directoriesTask = Task.Run(() => Directory.EnumerateDirectories(fullPath)
-                .Select(e => (Item)new ManagerDirectory { Name = e, Icon = IconType.ManagerDirectory }), cancelationToken);
+                .Select(e => 
+                {
+                    var directoryInfo = new DirectoryInfo(e);
+                    return (Item)new ManagerDirectory 
+                    { 
+                        Name = e, 
+                        Icon = IconType.ManagerDirectory, 
+                        Size = directoryInfo.GetDirectorySize(),
+                        Metadata = directoryInfo
+                    };
+                }), cancelationToken);
 
             var filesTask = Task.Run(() => Directory.EnumerateFiles(fullPath)
-                .Select(e => (Item)new ManagerFile { Name = e, Icon = IconType.ManagerFile }), cancelationToken);
+                .Select(e =>
+                {
+                    var fileInfo = new FileInfo(e);
+                    return (Item)new ManagerFile 
+                    { 
+                        Name = e, 
+                        Icon = IconType.ManagerFile,
+                        Size = fileInfo.Length,
+                        Metadata = fileInfo
+                    };
+                }), cancelationToken);
 
             return await new[] { directoriesTask, filesTask }.UnionWhenAll();
         }

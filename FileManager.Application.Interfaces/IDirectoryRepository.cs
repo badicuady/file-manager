@@ -7,5 +7,7 @@
         IDeleteDirectoryHandler DeleteDirectoryHandler { get; }
 
         IRenameDirectoryHandler RenameDirectoryHandler { get; }
+
+        ICopyDirectoryHandler CopyDirectoryHandler { get; }
     }
 }
