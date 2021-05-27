@@ -34,7 +34,7 @@ namespace FileManager.Application
         {
             path = PathProcessing.NormalizaPath(path);
             var fullPath = PathProcessing.ComputeFullPath(path, _settings.BasePath);
-            PathProcessing.ValidateDirectoryPath(path, fullPath, _settings.BasePath);
+            PathProcessing.ValidateDirectoryPath(path, defaultBasePath: _settings.BasePath);
 
             _logger.LogInformation($"Listing directory {fullPath}");
 

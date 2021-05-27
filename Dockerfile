@@ -18,8 +18,6 @@ FROM packages as build
 
 COPY ./ ./
 
-
-SHELL ["/bin/sh", "-c"]
 RUN dotnet build -c Release --no-restore .
 
 FROM build AS publish
