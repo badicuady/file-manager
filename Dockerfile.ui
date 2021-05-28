@@ -1,0 +1,19 @@
+FROM node:16.2-buster AS packages
+
+RUN npm install -g npm
+
+WORKDIR /app
+
+COPY ./ui/package.json ./
+COPY ./ui/yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+COPY ./ui ./
+
+FROM packages as build
+RUN yarn build
+
+FROM nginx:1.21.0-alpine as final
+
+COPY --from=build /app/build /usr/share/nginx/html
