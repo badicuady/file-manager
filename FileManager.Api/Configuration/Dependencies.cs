@@ -2,6 +2,7 @@
 using FileManager.Application.Handlers.CommandHandlers;
 using FileManager.Application.Handlers.Repositories;
 using FileManager.Application.Interfaces;
+using GraphQL.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FileManager.Api.Configuration
@@ -10,7 +11,11 @@ namespace FileManager.Api.Configuration
     {
         public static IServiceCollection ConfigureDependencies(this IServiceCollection services)
         {
-            services.AddScoped<IGetItemsHandler, GetItemsHandler>()
+            services
+                .AddSingleton(typeof(EnumerationGraphType<>))
+                .AddSingleton(typeof(AutoRegisteringObjectGraphType<>))
+
+                .AddScoped<IGetItemsHandler, GetItemsHandler>()
                 .AddScoped<ICreateDirectoryHandler, CreateDirectoryHandler>()
                 .AddScoped<IDeleteDirectoryHandler, DeleteDirectoryHandler>()
                 .AddScoped<IRenameDirectoryHandler, RenameDirectoryHandler>()

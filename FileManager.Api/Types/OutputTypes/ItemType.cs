@@ -8,6 +8,7 @@ namespace FileManager.Api.Types.OutputTypes
         public ItemType()
         {
             Name = "ItemType";
+            Field(t => t.Id);
             Field(t => t.Name);
             Field(t => t.Icon, type: typeof(IconTypeEnumType));
             Field(t => t.Size);

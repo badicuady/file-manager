@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FileManager.Shared.Extensions;
 using GraphQL.Types;
 
 namespace FileManager.Api.Types.OutputTypes
@@ -17,7 +18,9 @@ namespace FileManager.Api.Types.OutputTypes
             Field(t => t.LastAccessTimeUtc);
             Field(t => t.LastWriteTime);
             Field(t => t.LastWriteTimeUtc);
-            Field(t => t.Attributes, type: typeof(FileAttributesEnumType));
+            Field(name: "Attributes",
+                type: typeof(ListGraphType<EnumerationGraphType<FileAttributes>>),
+                resolve: fa => fa.Source.Attributes.FromFlags());
         }
     }
 }
