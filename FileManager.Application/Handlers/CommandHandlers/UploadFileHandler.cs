@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FileManager.Application.Interfaces;
+using FileManager.Domain.Models.Enums;
+using FileManager.Domain.Models.Manager;
 using FileManager.Shared.Constants;
 using FileManager.Shared.Processing;
 using FileManager.Shared.Settings;
@@ -21,7 +23,7 @@ namespace FileManager.Application.Handlers.CommandHandlers
             _settings = settings.Value;
         }
 
-        public async Task Handle
+        public async Task<Item> Handle
         (
             string activeDirectory = PathConstants.BaseDirectorySeparatorChar, 
             string uploadFileName = null,
@@ -39,6 +41,15 @@ namespace FileManager.Application.Handlers.CommandHandlers
             _logger.LogInformation($"Upload file {fullPath}");
 
             await Task.Run(() => File.WriteAllBytes(fullPath, uploadFile.ToArray()), cancelationToken);
+
+            var fileInfo = new FileInfo(fullPath);
+            return new ManagerFile 
+            { 
+                Name = fullPath, 
+                Icon = IconType.ManagerFile,
+                Size = fileInfo.Length,
+                Metadata = fileInfo
+            };
         }
     }
 }

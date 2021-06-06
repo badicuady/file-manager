@@ -2,8 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FileManager.Application.Interfaces;
-using FileManager.Exceptions;
+using FileManager.Domain.Models.Enums;
+using FileManager.Domain.Models.Manager;
 using FileManager.Shared.Constants;
+using FileManager.Shared.Extensions;
 using FileManager.Shared.Processing;
 using FileManager.Shared.Settings;
 using Microsoft.Extensions.Logging;
@@ -23,7 +25,7 @@ namespace FileManager.Application.Handlers.CommandHandlers
             _settings = settings.Value;
         }
 
-        public async Task Handle
+        public async Task<Item> Handle
         (
             string activeDirectory = PathConstants.BaseDirectorySeparatorChar,
             string copyDirectoryName = null,
@@ -39,12 +41,20 @@ namespace FileManager.Application.Handlers.CommandHandlers
             var newPath = PathProcessing.ComputeFullPath(copyDirectoryName, _settings.BasePath);
 
             PathProcessing.ValidateBasePath(oldPath);
-            PathProcessing.ValidateDirectoryPath(activeDirectory, defaultBasePath: _settings.BasePath);
             PathProcessing.ValidateDirectoryPath(copyDirectoryName, defaultBasePath: _settings.BasePath, check: false);
 
             _logger.LogInformation($"Copy directory {oldPath} to {newPath}");
 
             await Task.Run(() => CopyRecursive(new DirectoryInfo(oldPath), new DirectoryInfo(newPath)), cancelationToken);
+
+            var directoryInfo = new DirectoryInfo(newPath);
+            return new ManagerDirectory 
+            { 
+                Name = newPath, 
+                Icon = IconType.ManagerDirectory, 
+                Size = directoryInfo.GetDirectorySize(),
+                Metadata = directoryInfo
+            };
         }
 
         private void CopyRecursive(DirectoryInfo oldPath, DirectoryInfo newPath)

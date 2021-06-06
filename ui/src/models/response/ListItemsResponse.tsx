@@ -42,3 +42,31 @@ export interface ItemResponse {
 export interface ListItemsResponse {
     items: ItemResponse[]
 }
+
+export interface RenameDirectoryResponse {
+    renameDirectory: boolean
+}
+
+export interface RenameFileResponse {
+    renameFile: boolean
+}
+
+export interface DeleteDirectoryResponse {
+    deleteDirectory: boolean
+}
+
+export interface DeleteFileResponse {
+    deleteFile: boolean
+}
+
+export interface CopyDirectoryResponse {
+    copyDirectory: ItemResponse
+}
+
+export interface CopyFileResponse {
+    copyFile: ItemResponse
+}
+
+export interface CreateDirectoryResponse {
+    createDirectory: ItemResponse
+}

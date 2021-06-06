@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FileManager.Application.Interfaces;
-using FileManager.Exceptions;
 using FileManager.Shared.Constants;
 using FileManager.Shared.Processing;
 using FileManager.Shared.Settings;

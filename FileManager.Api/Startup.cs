@@ -43,6 +43,7 @@ namespace FileManager.Api
                     .AllowAnyMethod()
                     .AllowAnyOrigin())
                 .UseWebSockets()
+                .UseGraphQLUpload<AuthoringSchema>() // for GraphQL Upload
                 .UseGraphQL<AuthoringSchema>() // for GraphQL
                 .UseGraphQLPlayground(new PlaygroundOptions()); // for GraphQL
         }

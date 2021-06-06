@@ -1,16 +1,17 @@
 ﻿using System.IO;
-using System.Linq;
+using FileManager.Api.Types.OutputTypes;
 using FileManager.Shared.Constants;
 using GraphQL;
-using GraphQL.Attachments;
 using GraphQL.Types;
+using GraphQL.Upload.AspNetCore;
+using Microsoft.AspNetCore.Http;
 
 namespace FileManager.Api.Interactions
 {
     public partial class AuthoringMutation : ObjectGraphType
     {
         private void AddUploadFile() =>
-            FieldAsync<BooleanGraphType>(
+            FieldAsync<ItemType>(
                 "uploadFile",
                 arguments: new QueryArguments
                 (
@@ -24,19 +25,28 @@ namespace FileManager.Api.Interactions
                     {
                         Name = "uploadFileName",
                         ResolvedType = new StringGraphType()
+                    },
+                    new QueryArgument<UploadGraphType>
+                    {
+                        Name = "file",
+                        ResolvedType = new UploadGraphType()
                     }
                 ),
                 resolve: async context =>
                 {
                     var activeDirectory = context.GetArgument<string>("activeDirectory");
                     var uploadFileName = context.GetArgument<string>("uploadFileName");
-                    var incomingAttachments = context.IncomingAttachments();
-                    var attachmentStream = incomingAttachments.Values.FirstOrDefault();
+                    var attachmentStream = context.GetArgument<IFormFile>("file");
+
+                    if (attachmentStream == null)
+                    {
+                        return null;
+                    }
+
                     var stream = CreateMemoryStream(attachmentStream);
+                    var item = await _fileRepository.UploadFileHandler.Handle(activeDirectory, uploadFileName ?? attachmentStream.Name, stream, context.CancellationToken);
 
-                    await _fileRepository.UploadFileHandler.Handle(activeDirectory, uploadFileName ?? attachmentStream.Name, stream, context.CancellationToken);
-
-                    return true;
+                    return item;
                 });
 
         private void AddDeleteFile() =>
@@ -103,8 +113,8 @@ namespace FileManager.Api.Interactions
                     }
                 );
 
-        private void AddCopyFile() => 
-            FieldAsync<BooleanGraphType>
+        private void AddCopyFile() =>
+            FieldAsync<ItemType>
                 (
                     "copyFile",
                     arguments: new QueryArguments
@@ -132,13 +142,13 @@ namespace FileManager.Api.Interactions
                         var oldFileName = context.GetArgument<string>("oldFileName");
                         var copyFileName = context.GetArgument<string>("copyFileName");
 
-                        await _fileRepository.CopyFileHandler.Handle(activeDirectory, oldFileName, copyFileName, context.CancellationToken);
+                        var item = await _fileRepository.CopyFileHandler.Handle(activeDirectory, oldFileName, copyFileName, context.CancellationToken);
 
-                        return true;
+                        return item;
                     }
                 );
 
-        private static MemoryStream CreateMemoryStream(AttachmentStream attachmentStream)
+        private static MemoryStream CreateMemoryStream(IFormFile attachmentStream)
         {
             var stream = new MemoryStream();
             attachmentStream.CopyTo(stream);

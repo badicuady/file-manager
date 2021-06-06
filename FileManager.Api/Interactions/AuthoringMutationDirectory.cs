@@ -101,7 +101,7 @@ namespace FileManager.Api.Interactions
                 );
 
         private void AddCopyDirectory() =>
-            FieldAsync<BooleanGraphType>
+            FieldAsync<ItemType>
                 (
                     "copyDirectory",
                     arguments: new QueryArguments
@@ -123,9 +123,9 @@ namespace FileManager.Api.Interactions
                         var activeDirectory = context.GetArgument<string>("activeDirectory");
                         var copyDirectoryName = context.GetArgument<string>("copyDirectoryName");
 
-                        await _directoryRepository.CopyDirectoryHandler.Handle(activeDirectory, copyDirectoryName, context.CancellationToken);
+                        var item = await _directoryRepository.CopyDirectoryHandler.Handle(activeDirectory, copyDirectoryName, context.CancellationToken);
 
-                        return true;
+                        return item;
                     }
                 );
     }

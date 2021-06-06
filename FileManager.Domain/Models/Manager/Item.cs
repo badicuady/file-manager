@@ -6,7 +6,7 @@ namespace FileManager.Domain.Models.Manager
 {
     public abstract class Item
     {
-        public string Id { get => Name.Sha256(); }
+        public string Id { get => Metadata.FullName.Sha256(); }
 
         public string Name { get; set; }
 

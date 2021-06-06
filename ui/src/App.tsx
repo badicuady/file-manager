@@ -6,7 +6,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <div style={{ width: 800, margin: "0 auto", marginTop: 50 }}>
+      <div style={{ width: 960, margin: "0 auto", marginTop: 50 }}>
         <FileBrowser></FileBrowser>
       </div>
     </div>
