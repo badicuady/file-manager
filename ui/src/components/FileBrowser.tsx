@@ -333,7 +333,7 @@ class FileBrowser extends React.Component<IProps, IState> {
             ? {
                 ...e,
                 isDir: e.icon === IconTypeResponse.ManagerDirectory,
-                name: e.name.substring(e.name.lastIndexOf('\\') + 1)
+                name: e.name.substring(Math.max(e.name.lastIndexOf('\\'), e.name.lastIndexOf('/')) + 1)
             }
             : null;
     }

@@ -5,14 +5,14 @@ RUN npm install -g npm
 WORKDIR /app
 
 COPY ./ui/package.json ./
-COPY ./ui/yarn.lock ./
+COPY ./ui/package-lock.json ./
 
-RUN yarn install --frozen-lockfile
+RUN npm ci
 
 COPY ./ui ./
 
 FROM packages as build
-RUN yarn build
+RUN npm run build
 
 FROM nginx:1.21.0-alpine as final
 

@@ -1,6 +1,5 @@
-import { ApolloClient, ApolloQueryResult, FetchResult, HttpLink, InMemoryCache, gql /*, from*/ } from '@apollo/client';
+import { ApolloClient, ApolloQueryResult, FetchResult, HttpLink, InMemoryCache, gql, from } from '@apollo/client';
 import { onError } from "@apollo/client/link/error";
-import { createUploadLink } from 'apollo-upload-client';
 
 import settings from '../config/Settings';
 import {
@@ -35,9 +34,7 @@ class GraphQLClient {
 
     readonly cache = new InMemoryCache();
     readonly client = new ApolloClient({
-        link: createUploadLink({
-           uri: settings.apiUrl
-        }),
+        link: from([this.httpLink, this.errorLink]),
         cache: this.cache
     });
 
