@@ -11,7 +11,8 @@ import {
     DeleteFileResponse,
     ListItemsResponse,
     RenameDirectoryResponse,
-    RenameFileResponse
+    RenameFileResponse,
+    UploadFileResponse
 } from '../models/response/ListItemsResponse';
 import ItemsQueries from './queries/Items'
 
@@ -47,13 +48,12 @@ class GraphQLClient {
         });
     }
 
-    uploadFile(activeDirectory: string, uploadFileName: string, file: File): Promise<FetchResult<RenameDirectoryResponse>> {
+    uploadFile(activeDirectory: string, uploadFileName: string, file: string): Promise<FetchResult<UploadFileResponse>> {
         this.client.resetStore();
 
         return this.client.mutate({
             mutation: gql(ItemsQueries.uploadFile),
             variables: { activeDirectory, uploadFileName, file },
-            context: { file }
         });
     }
 

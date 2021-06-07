@@ -43,6 +43,10 @@ export interface ListItemsResponse {
     items: ItemResponse[]
 }
 
+export interface UploadFileResponse {
+    uploadFile: ItemResponse
+}
+
 export interface RenameDirectoryResponse {
     renameDirectory: boolean
 }

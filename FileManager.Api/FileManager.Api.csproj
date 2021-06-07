@@ -13,7 +13,6 @@
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore.NewtonsoftJson" Version="5.0.2" />
     <PackageReference Include="GraphQL.Server.Transports.WebSockets" Version="4.4.1" />
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="5.0.2" />
-    <PackageReference Include="GraphQL.Upload.AspNetCore" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="5.0.0" />

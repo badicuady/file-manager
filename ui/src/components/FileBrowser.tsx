@@ -157,8 +157,12 @@ class FileBrowser extends React.Component<IProps, IState> {
     private async handleUploadFile(): Promise<void> {
         const files = this.fileUpload.current.files;
         if (files.length > 0) {
-            const uploadResponse = await this.client.uploadFile(this.currentDirectory, files[0].name, files[0]);
-            console.log(uploadResponse);
+            const currentDirectory = this.getCurrenDirectory();
+            const result = await this.uploadFile(currentDirectory, files[0].name, files[0]);
+           
+            if (result) {
+                this.setState({ files: [...this.state.files, result] });
+            }
         }
     }
 
@@ -314,6 +318,14 @@ class FileBrowser extends React.Component<IProps, IState> {
     private async createDirectory(activeDirectory: string = '/', createdDirectoryName: string): Promise<Nullable<FileData>> {
         const createdDirectory = await this.client.createDirectory(activeDirectory, createdDirectoryName);
         return this.mapItemResponse(createdDirectory.data?.createDirectory);
+    }
+
+    private async uploadFile(activeDirectory: string = '/', uploadFileName: string, fileContent: File): Promise<Nullable<FileData>> {
+        const arrayBuffer = await new Response(fileContent).arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const fileAsBase64 = btoa(String.fromCharCode(...Array.from(uint8Array)));
+        const item = await this.client.uploadFile(activeDirectory, uploadFileName ?? fileContent.name, fileAsBase64);
+        return this.mapItemResponse(item.data?.uploadFile);
     }
 
     private mapItemResponse(e: ItemResponse | null | undefined): Nullable<FileData> {

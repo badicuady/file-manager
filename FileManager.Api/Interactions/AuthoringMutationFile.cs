@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using FileManager.Api.Types.OutputTypes;
 using FileManager.Shared.Constants;
 using GraphQL;
 using GraphQL.Types;
-using GraphQL.Upload.AspNetCore;
 using Microsoft.AspNetCore.Http;
 
 namespace FileManager.Api.Interactions
@@ -26,25 +26,21 @@ namespace FileManager.Api.Interactions
                         Name = "uploadFileName",
                         ResolvedType = new StringGraphType()
                     },
-                    new QueryArgument<UploadGraphType>
+                    new QueryArgument<NonNullGraphType<StringGraphType>>
                     {
                         Name = "file",
-                        ResolvedType = new UploadGraphType()
+                        ResolvedType = new StringGraphType()
                     }
                 ),
                 resolve: async context =>
                 {
                     var activeDirectory = context.GetArgument<string>("activeDirectory");
                     var uploadFileName = context.GetArgument<string>("uploadFileName");
-                    var attachmentStream = context.GetArgument<IFormFile>("file");
+                    var fileAsBase64String = context.GetArgument<string>("file");
 
-                    if (attachmentStream == null)
-                    {
-                        return null;
-                    }
-
-                    var stream = CreateMemoryStream(attachmentStream);
-                    var item = await _fileRepository.UploadFileHandler.Handle(activeDirectory, uploadFileName ?? attachmentStream.Name, stream, context.CancellationToken);
+                    var fileAsBytes = Convert.FromBase64String(fileAsBase64String);
+                    var attachmentStream = new MemoryStream(fileAsBytes);
+                    var item = await _fileRepository.UploadFileHandler.Handle(activeDirectory, uploadFileName, attachmentStream, context.CancellationToken);
 
                     return item;
                 });

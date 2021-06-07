@@ -31,8 +31,8 @@ const ItemsQueries: ItemsQueriesType = {
         items(path: $path) ${Item}
     }`,
 
-    uploadFile: `mutation uploadFile($activeDirectory: String, $uploadFileName: String) {
-        uploadFile(activeDirectory:$activeDirectory, uploadFileName:$uploadFileName) ${Item}
+    uploadFile: `mutation uploadFile($activeDirectory: String, $uploadFileName: String!, $file: String!) {
+        uploadFile(activeDirectory:$activeDirectory, uploadFileName:$uploadFileName, file:$file) ${Item}
     }`,
 
     renameDirectory: `mutation renameDirectory($activeDirectory: String, $renameDirectoryName: String!) {

@@ -13,7 +13,6 @@ namespace FileManager.Api.Configuration
         public static IServiceCollection ConfigureGraphQL(this IServiceCollection services, IWebHostEnvironment environment)
         {
             services.AddScoped<AuthoringSchema>()
-                .AddGraphQLUpload()
                 .AddGraphQL(options =>
                 {
                     options.EnableMetrics = environment.IsDevelopment();
